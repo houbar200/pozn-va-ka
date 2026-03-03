@@ -1,1 +1,1 @@
-# pozn-va-ka
+# poznavacka
