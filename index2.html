@@ -3,104 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zvířecí Poznávačka</title>
+    <title>Poznávačka Plemen PRO</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0f172a">
+
     <style>
         :root {
-            --bg: #f0f4f8;
-            --card: #ffffff;
-            --primary: #4a90e2;
-            --text: #333;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --primary: #10b981; /* Neonově zelená pro úspěch */
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
         }
 
         body {
-            margin: 0; font-family: -apple-system, sans-serif;
+            margin: 0; font-family: -apple-system, system-ui, sans-serif;
             background: var(--bg); color: var(--text);
             display: flex; flex-direction: column; height: 100vh;
             align-items: center; justify-content: center;
+            overflow: hidden;
+            -webkit-user-select: none; user-select: none;
         }
 
-        .app-container {
-            width: 90%; max-width: 400px; text-align: center;
-        }
+        .app-container { width: 92%; max-width: 400px; text-align: center; }
 
         .card {
-            background: var(--card); border-radius: 25px;
-            padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            margin-bottom: 20px; min-height: 400px;
-            display: flex; flex-direction: column; align-items: center;
+            background: var(--card); border-radius: 32px;
+            padding: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            min-height: 440px; display: flex; flex-direction: column;
+            align-items: center; border: 1px solid #334155;
         }
 
         .animal-img {
-            width: 100%; height: 250px; object-fit: cover;
-            border-radius: 15px; margin-bottom: 20px;
-            background: #eee;
+            width: 100%; height: 260px; object-fit: cover;
+            border-radius: 24px; margin-bottom: 20px;
+            background: #0f172a; border: 1px solid #334155;
+            transition: opacity 0.3s ease-in-out;
         }
 
         #answer {
-            font-size: 1.8rem; font-weight: bold; color: var(--primary);
-            margin: 10px 0; min-height: 2.2rem; visibility: hidden;
+            font-size: 1.6rem; font-weight: 800; color: var(--primary);
+            margin: 10px 0; min-height: 4.5rem; visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            line-height: 1.2;
         }
 
         .btn {
-            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            width: 100%; padding: 18px; border: none; border-radius: 20px;
             font-size: 1.1rem; font-weight: bold; cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s; margin-bottom: 10px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        .btn-reveal { background: var(--primary); color: white; }
-        .btn-next { background: #34c759; color: white; display: none; }
+        .btn-reveal { 
+            background: transparent; color: var(--primary); 
+            border: 2px solid var(--primary); 
+        }
         
-        .btn:active { transform: scale(0.98); }
+        .btn-next { 
+            background: var(--primary); color: #0f172a; 
+            display: none; 
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+        }
 
-        .progress { font-size: 0.8rem; color: #888; margin-top: 10px; }
+        .btn:active { transform: scale(0.95); opacity: 0.9; }
+
+        .progress { font-size: 0.85rem; color: var(--text-dim); margin-top: 15px; font-weight: 500; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="card">
-        <img id="animal-image" class="animal-img" src="" alt="Zvíře">
+        <img id="animal-image" class="animal-img" src="" alt="Načítám plemeno...">
         <div id="answer">???</div>
-        <button id="reveal-btn" class="btn btn-reveal" onclick="reveal()">UKÁZAT NÁZEV</button>
-        <button id="next-btn" class="btn btn-next" onclick="nextQuestion()">DALŠÍ ZVÍŘE ➔</button>
-        <div class="progress" id="progress">Načítám...</div>
+        <button id="reveal-btn" class="btn btn-reveal" onclick="reveal()">Kdo jsem?</button>
+        <button id="next-btn" class="btn btn-next" onclick="nextQuestion()">Další plemeno ➔</button>
+        <div class="progress" id="progress">Míchám karty...</div>
     </div>
 </div>
 
 <script>
-    // Seznam zvířat (můžeš si sem přidat další)
-    const quizData = [
-        { name: "Lev", img: "http://googleusercontent.com/image_collection/image_retrieval/2641472515327824393_0" },
-        { name: "Slon", img: "http://googleusercontent.com/image_collection/image_retrieval/4801493615197016726_0" },
-        { name: "Žirafa", img: "http://googleusercontent.com/image_collection/image_retrieval/14990773705399737238_0" },
-        { name: "Tučňák", img: "http://googleusercontent.com/image_collection/image_retrieval/106045820223358885_0" }
+    // KOMPLETNÍ SEZNAM TVÝCH 20 SOUBORŮ
+    const seznamSouboru = [
+        "Aberdeen Angus.jpg",
+        "Awassi.JPG",
+        "Belgické Modré.jpg",
+        "Česká Červinka.png",
+        "České bílé ušlechtilé.jpg",
+        "Český Strakatý Skot.jpg",
+        "Duroc.jpg",
+        "Galloway.jpg",
+        "Gasconne.png",
+        "Hampshire.jpg",
+        "Highland.jpg",
+        "Holštýn.jpg",
+        "Jersey.jpg",
+        "Landrace.jpg",
+        "Mangalica.jpg",
+        "Oxford Down.jpg",
+        "Piemontese.jpg",
+        "Pietrain.jpg",
+        "Přeštické černostrakaté.jpg",
+        "Suffolk.jpg"
     ];
 
+    let quizData = [];
     let currentIndex = 0;
+
+    // Funkce pro zamíchání karet
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Příprava dat (název zvířete se vytvoří z názvu souboru)
+    function prepareData() {
+        quizData = seznamSouboru.map(soubor => {
+            let jmeno = soubor.substring(0, soubor.lastIndexOf('.')); 
+            return { name: jmeno, img: soubor };
+        });
+        shuffle(quizData);
+    }
 
     function updateCard() {
         const animal = quizData[currentIndex];
-        document.getElementById('animal-image').src = animal.img;
-        document.getElementById('answer').innerText = animal.name;
-        document.getElementById('answer').style.visibility = 'hidden';
-        document.getElementById('reveal-btn').style.display = 'block';
-        document.getElementById('next-btn').style.display = 'none';
-        document.getElementById('progress').innerText = `Zvíře ${currentIndex + 1} z ${quizData.length}`;
+        const imgElement = document.getElementById('animal-image');
+        
+        imgElement.style.opacity = 0;
+        
+        setTimeout(() => {
+            imgElement.src = animal.img;
+            imgElement.style.opacity = 1;
+            document.getElementById('answer').innerText = animal.name;
+            document.getElementById('answer').style.visibility = 'hidden';
+            document.getElementById('reveal-btn').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('progress').innerText = `KARTA ${currentIndex + 1} / ${quizData.length}`;
+        }, 250);
     }
 
     function reveal() {
         document.getElementById('answer').style.visibility = 'visible';
         document.getElementById('reveal-btn').style.display = 'none';
         document.getElementById('next-btn').style.display = 'block';
-        if (navigator.vibrate) navigator.vibrate(50);
+        if (navigator.vibrate) navigator.vibrate(40);
     }
 
     function nextQuestion() {
-        currentIndex = (currentIndex + 1) % quizData.length;
+        currentIndex++;
+        if (currentIndex >= quizData.length) {
+            alert("Všechna plemena hotova! Zamíchám je znovu.");
+            currentIndex = 0;
+            shuffle(quizData);
+        }
         updateCard();
     }
 
-    // Inicializace první karty
+    // Inicializace aplikace
+    prepareData();
     updateCard();
 </script>
 
